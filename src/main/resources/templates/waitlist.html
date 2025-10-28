@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Waitlist</title>
+</head>
+<body>
+<h2>Waitlisted Students</h2>
+<table border="1">
+    <tr>
+        <th>Student</th>
+        <th>Preferred Room</th>
+        <th>Priority</th>
+        <th>Since</th>
+    </tr>
+    <tr th:each="w : ${waitlist}">
+        <td th:text="${w.student.name}"></td>
+        <td th:text="${w.preferredRoomType}"></td>
+        <td th:text="${w.priorityScore}"></td>
+        <td th:text="${w.waitingSince}"></td>
+    </tr>
+</table>
+</body>
+</html>

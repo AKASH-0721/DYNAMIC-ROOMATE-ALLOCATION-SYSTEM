@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student List</title>
+</head>
+<body>
+<h2>Students</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Branch</th>
+        <th>Preference</th>
+        <th>Room Type</th>
+        <th>Status</th>
+        <th>Allocate</th>
+    </tr>
+    <tr th:each="s : ${students}">
+        <td th:text="${s.name}"></td>
+        <td th:text="${s.gender}"></td>
+        <td th:text="${s.branch}"></td>
+        <td th:text="${s.preferenceType}"></td>
+        <td th:text="${s.roomTypePreference}"></td>
+        <td th:text="${s.status}"></td>
+        <td>
+            <form th:action="@{/hostel/allocate}" method="post">
+                <input type="hidden" name="studentId" th:value="${s.studentId}" />
+                <select name="roomType">
+                    <option value="Single">Single</option>
+                    <option value="Double">Double</option>
+                    <option value="Triple">Triple</option>
+                </select>
+                <button type="submit">Allocate</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
