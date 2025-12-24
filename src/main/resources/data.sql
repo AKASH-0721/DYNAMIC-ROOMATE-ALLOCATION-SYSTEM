@@ -69,7 +69,8 @@ INSERT INTO room_swap_requests (student_id, current_room_id, requested_room_type
 (3, 2, 'Single', 'Pending', '2024-01-25', 'Need more privacy for studies', 4),
 (5, 4, 'Double', 'Under Review', '2024-01-22', 'Roommate compatibility issues', 3);
 
--- Insert sample admin
+-- Insert sample admin (using plain text passwords for testing)
 INSERT INTO system_admins (username, password_hash, role, full_name, email, is_active, created_at) VALUES
-('admin', '$2a$10$dXJ3SW6G7P90lGvQsohbGe9L9KX9l.4cewQfSLI.T2e8Y5n8XURXS', 'SUPER_ADMIN', 'System Administrator', 'admin@hostel.edu', true, '2024-01-01 00:00:00'),
-('hostel_manager', '$2a$10$dXJ3SW6G7P90lGvQsohbGe9L9KX9l.4cewQfSLI.T2e8Y5n8XURXS', 'HOSTEL_MANAGER', 'John Doe', 'manager@hostel.edu', true, '2024-01-01 00:00:00');
+('admin', 'admin123', 'SUPER_ADMIN', 'System Administrator', 'admin@hostel.edu', true, '2024-01-01 00:00:00'),
+('manager', 'manager123', 'HOSTEL_MANAGER', 'Hostel Manager', 'manager@hostel.edu', true, '2024-01-01 00:00:00'),
+('coordinator', 'coord123', 'ROOM_COORDINATOR', 'Room Coordinator', 'coordinator@hostel.edu', true, '2024-01-01 00:00:00');

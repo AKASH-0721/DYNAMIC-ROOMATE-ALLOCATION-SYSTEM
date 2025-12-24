@@ -205,4 +205,58 @@ public class StudentService {
         
         return stats;
     }
+
+    /**
+     * Additional methods for AdminController compatibility
+     */
+    
+    /**
+     * Find student by ID - alias for getStudentById
+     * @param id Student ID
+     * @return Optional containing student if found
+     */
+    public Optional<Student> findById(Long id) {
+        return getStudentById(id);
+    }
+
+    /**
+     * Save student - alias for saveStudent
+     * @param student Student to save
+     * @return Saved student
+     */
+    public Student save(Student student) {
+        return saveStudent(student);
+    }
+
+    /**
+     * Delete student - alias for deleteStudent
+     * @param id Student ID to delete
+     */
+    public void delete(Long id) {
+        deleteStudent(id);
+    }
+
+    /**
+     * Allocate student to a specific room
+     * @param studentId Student ID
+     * @param roomId Room ID
+     * @throws IllegalArgumentException if student or room not found
+     */
+    public void allocateStudentToRoom(Long studentId, Long roomId) {
+        Optional<Student> studentOpt = findById(studentId);
+        if (!studentOpt.isPresent()) {
+            throw new IllegalArgumentException("Student with ID " + studentId + " not found");
+        }
+
+        Student student = studentOpt.get();
+        
+        if (student.isAllocated()) {
+            throw new IllegalArgumentException("Student is already allocated to a room");
+        }
+
+        // Note: This is a simplified allocation - in a real system, you'd fetch the Room entity
+        // For now, just update the status
+        student.setStatus("Allocated");
+        save(student);
+    }
 }

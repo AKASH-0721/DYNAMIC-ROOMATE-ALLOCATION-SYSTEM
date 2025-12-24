@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students - Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fc;
+        }
+        .navbar-admin {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #5a5c69;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        .nav-link {
+            color: #5a5c69;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #5e72e4;
+            background-color: #eaecf4;
+        }
+        .nav-link.active {
+            color: #5e72e4;
+            background-color: #eaecf4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-admin">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt me-2"></i>Admin Portal
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">
+                    <i class="fas fa-home me-1"></i>Main Site
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 p-0">
+                <div class="sidebar">
+                    <div class="list-group list-group-flush">
+                        <a href="/admin/dashboard" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a href="/admin/students" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-users me-2"></i>Manage Students
+                        </a>
+                        <a href="/admin/rooms" class="list-group-item list-group-item-action">
+                            <i class="fas fa-bed me-2"></i>Manage Rooms
+                        </a>
+                        <a href="/admin/waitlist" class="list-group-item list-group-item-action">
+                            <i class="fas fa-clock me-2"></i>Waitlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Manage Students</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                        <i class="fas fa-user-plus me-2"></i>Add New Student
+                    </button>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Students Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-users me-2"></i>All Students
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="studentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>Branch</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                        <th>Room</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="student : ${students}">
+                                        <td th:text="${student.studentId}">1</td>
+                                        <td th:text="${student.name}">Student Name</td>
+                                        <td th:text="${student.gender}">Male</td>
+                                        <td th:text="${student.branch}">CS</td>
+                                        <td th:text="${student.year}">2</td>
+                                        <td>
+                                            <span class="badge bg-success" th:if="${student.status == 'Allocated'}" th:text="${student.status}">Allocated</span>
+                                            <span class="badge bg-warning" th:if="${student.status == 'Waiting'}" th:text="${student.status}">Waiting</span>
+                                            <span class="badge bg-info" th:if="${student.status == 'Processing Allocation'}" th:text="${student.status}">Processing</span>
+                                            <span class="badge bg-secondary" th:if="${student.status == 'Left'}" th:text="${student.status}">Left</span>
+                                        </td>
+                                        <td th:text="${student.roomId != null ? student.roomId : 'Not Assigned'}">101</td>
+                                        <td>
+                                            <a th:href="@{/admin/students/edit/{id}(id=${student.studentId})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-success" 
+                                                    th:if="${student.status == 'Waiting'}"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#allocateModal"
+                                                    th:attr="data-student-id=${student.studentId}, data-student-name=${student.name}">
+                                                <i class="fas fa-home"></i>
+                                            </button>
+                                            <form th:action="@{/admin/students/delete/{id}(id=${student.studentId})}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Are you sure you want to delete this student?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(students)}">
+                                        <td colspan="8" class="text-center text-muted">No students found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>Add New Student
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/students/add}" method="post" th:object="${newStudent}">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender *</label>
+                                <select class="form-select" id="gender" th:field="*{gender}" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="branch" class="form-label">Branch *</label>
+                                <select class="form-select" id="branch" th:field="*{branch}" required>
+                                    <option value="">Select Branch</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Mechanical">Mechanical</option>
+                                    <option value="Civil">Civil</option>
+                                    <option value="Electrical">Electrical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="year" class="form-label">Year *</label>
+                                <select class="form-select" id="year" th:field="*{year}" required>
+                                    <option value="">Select Year</option>
+                                    <option value="1">1st Year</option>
+                                    <option value="2">2nd Year</option>
+                                    <option value="3">3rd Year</option>
+                                    <option value="4">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="preferenceType" class="form-label">Preference Type</label>
+                                <select class="form-select" id="preferenceType" th:field="*{preferenceType}">
+                                    <option value="">Select Preference</option>
+                                    <option value="Studious">Studious</option>
+                                    <option value="Social">Social</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Quiet">Quiet</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="roomTypePreference" class="form-label">Room Preference</label>
+                                <select class="form-select" id="roomTypePreference" th:field="*{roomTypePreference}">
+                                    <option value="">Select Room Type</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Double">Double</option>
+                                    <option value="Triple">Triple</option>
+                                    <option value="Quad">Quad</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Add Student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Allocate Room Modal -->
+    <div class="modal fade" id="allocateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-home me-2"></i>Allocate Room
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/students/allocate}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="allocateStudentId" name="studentId">
+                        <div class="mb-3">
+                            <label class="form-label">Student:</label>
+                            <span id="allocateStudentName" class="fw-bold"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomId" class="form-label">Available Rooms *</label>
+                            <select class="form-select" id="roomId" name="roomId" required>
+                                <option value="">Select Room</option>
+                                <option th:each="room : ${availableRooms}" 
+                                        th:value="${room.roomId}" 
+                                        th:text="${room.roomNumber + ' (' + room.roomType + ') - ' + room.occupancy + '/' + room.capacity}">
+                                    Room 101 (Double) - 1/2
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-2"></i>Allocate Room
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle allocate modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const allocateModal = document.getElementById('allocateModal');
+            allocateModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const studentId = button.getAttribute('data-student-id');
+                const studentName = button.getAttribute('data-student-name');
+                
+                document.getElementById('allocateStudentId').value = studentId;
+                document.getElementById('allocateStudentName').textContent = studentName;
+            });
+        });
+    </script>
+</body>
+</html>
