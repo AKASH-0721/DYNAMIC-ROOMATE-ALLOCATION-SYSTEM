@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hostel Management System - Dashboard</title>
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="bg-light">
+
+<!-- Navigation Header -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">
+            <i class="bi bi-building"></i> Hostel Management System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/hostel/students">
+                        <i class="bi bi-people"></i> Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hostel/rooms">
+                        <i class="bi bi-house-door"></i> Rooms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hostel/waitlist">
+                        <i class="bi bi-clock-history"></i> Waitlist
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 text-primary">
+                <i class="bi bi-house-heart-fill"></i> Welcome to Hostel Management
+            </h1>
+            <p class="lead text-muted">
+                Smart room allocation system with advanced compatibility matching
+            </p>
+        </div>
+    </div>
+
+    <!-- Error Message (if any) -->
+    <div th:if="${error}" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center bg-primary text-white h-100">
+                <div class="card-body">
+                    <i class="bi bi-people-fill" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title mt-2" th:text="${totalStudents ?: 0}">0</h2>
+                    <p class="card-text">Total Students</p>
+                </div>
+                <div class="card-footer bg-dark">
+                    <a href="/hostel/students" class="text-white text-decoration-none">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-center bg-success text-white h-100">
+                <div class="card-body">
+                    <i class="bi bi-house-check-fill" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title mt-2" th:text="${allocatedStudents ?: 0}">0</h2>
+                    <p class="card-text">Students Allocated</p>
+                </div>
+                <div class="card-footer bg-dark">
+                    <small>Successfully placed in rooms</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-center bg-warning text-dark h-100">
+                <div class="card-body">
+                    <i class="bi bi-clock-history" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title mt-2" th:text="${waitingStudents ?: 0}">0</h2>
+                    <p class="card-text">Students Waiting</p>
+                </div>
+                <div class="card-footer bg-dark text-white">
+                    <a href="/hostel/waitlist" class="text-white text-decoration-none">
+                        View Waitlist <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-center bg-info text-white h-100">
+                <div class="card-body">
+                    <i class="bi bi-door-open-fill" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title mt-2" th:text="${availableRooms ?: 0}">0</h2>
+                    <p class="card-text">Available Rooms</p>
+                </div>
+                <div class="card-footer bg-dark">
+                    <a href="/hostel/rooms" class="text-white text-decoration-none">
+                        View Rooms <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Quick Actions</h3>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="/hostel/students" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-person-plus"></i> Manage Students
+                </a>
+                <a href="/hostel/rooms" class="btn btn-outline-success btn-lg">
+                    <i class="bi bi-house-add"></i> Manage Rooms
+                </a>
+                <a href="/hostel/waitlist" class="btn btn-outline-warning btn-lg">
+                    <i class="bi bi-list-ol"></i> View Waitlist
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="bi bi-graph-up"></i> Room Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-info" th:text="${totalRooms ?: 0}">0</h4>
+                                <small>Total Rooms</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-success" th:text="${availableRooms ?: 0}">0</h4>
+                                <small>Available</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress">
+                            <div class="progress-bar bg-danger" role="progressbar" 
+                                 th:style="'width: ' + ${totalRooms > 0 ? (fullRooms * 100 / totalRooms) : 0} + '%'"
+                                 th:text="${fullRooms ?: 0} + ' Full'">
+                            </div>
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 th:style="'width: ' + ${totalRooms > 0 ? (availableRooms * 100 / totalRooms) : 0} + '%'">
+                            </div>
+                        </div>
+                        <small class="text-muted">Room Occupancy Status</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5><i class="bi bi-exclamation-circle"></i> System Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span>Database Connection</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span>Allocation System</span>
+                            <span class="badge bg-success">Running</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span>Waitlist Processing</span>
+                            <span class="badge" th:classappend="${waitlistSize > 0} ? 'bg-warning' : 'bg-success'"
+                                  th:text="${waitlistSize > 0} ? 'Pending (' + ${waitlistSize} + ')' : 'Clear'">Clear</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="bi bi-gear-fill"></i> System Features</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="bi bi-cpu text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">Smart Allocation</h6>
+                                <p class="text-muted small">AI-powered room assignment based on compatibility</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="bi bi-graph-up text-success" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">Priority Queue</h6>
+                                <p class="text-muted small">Fair waitlist management with priority scoring</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="bi bi-shield-check text-info" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">Data Security</h6>
+                                <p class="text-muted small">Secure student data management with audit trails</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">
+            <i class="bi bi-code"></i> Hostel Management System v1.0 | 
+            Built with Spring Boot & Bootstrap | 
+            <i class="bi bi-heart-fill text-danger"></i> DSA Project Team
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

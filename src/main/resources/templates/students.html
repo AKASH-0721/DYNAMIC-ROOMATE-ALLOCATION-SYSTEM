@@ -1,39 +1,177 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Student List</title>
+    <title>Student Management - Hostel System</title>
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
-<body>
-<h2>Students</h2>
-<table border="1">
-    <tr>
-        <th>Name</th>
-        <th>Gender</th>
-        <th>Branch</th>
-        <th>Preference</th>
-        <th>Room Type</th>
-        <th>Status</th>
-        <th>Allocate</th>
-    </tr>
-    <tr th:each="s : ${students}">
-        <td th:text="${s.name}"></td>
-        <td th:text="${s.gender}"></td>
-        <td th:text="${s.branch}"></td>
-        <td th:text="${s.preferenceType}"></td>
-        <td th:text="${s.roomTypePreference}"></td>
-        <td th:text="${s.status}"></td>
-        <td>
-            <form th:action="@{/hostel/allocate}" method="post">
-                <input type="hidden" name="studentId" th:value="${s.studentId}" />
-                <select name="roomType">
-                    <option value="Single">Single</option>
-                    <option value="Double">Double</option>
-                    <option value="Triple">Triple</option>
-                </select>
-                <button type="submit">Allocate</button>
-            </form>
-        </td>
-    </tr>
-</table>
+<body class="bg-light">
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center text-primary">
+                <i class="bi bi-people-fill"></i> Student Management
+            </h1>
+            <p class="text-center text-muted">Manage student registrations and room allocations</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav class="nav nav-pills nav-justified">
+                <a class="nav-link" href="/hostel/rooms">
+                    <i class="bi bi-house-door"></i> Rooms
+                </a>
+                <a class="nav-link active" href="/hostel/students">
+                    <i class="bi bi-people"></i> Students
+                </a>
+                <a class="nav-link" href="/hostel/waitlist">
+                    <i class="bi bi-clock-history"></i> Waitlist
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table"></i> Registered Students
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><i class="bi bi-person"></i> Name</th>
+                                    <th><i class="bi bi-gender-ambiguous"></i> Gender</th>
+                                    <th><i class="bi bi-mortarboard"></i> Branch</th>
+                                    <th><i class="bi bi-heart"></i> Preference</th>
+                                    <th><i class="bi bi-house"></i> Room Type</th>
+                                    <th><i class="bi bi-check-circle"></i> Status</th>
+                                    <th class="text-center"><i class="bi bi-tools"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${students}">
+                                    <td>
+                                        <strong th:text="${s.name}"></strong>
+                                        <br>
+                                        <small class="text-muted">Year <span th:text="${s.year}"></span></small>
+                                    </td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${s.gender == 'Male'} ? 'bg-info' : (${s.gender == 'Female'} ? 'bg-pink' : 'bg-secondary')"
+                                              th:text="${s.gender}"></span>
+                                    </td>
+                                    <td th:text="${s.branch}"></td>
+                                    <td>
+                                        <span th:if="${s.preferenceType}" 
+                                              th:text="${s.preferenceType}" 
+                                              class="badge bg-light text-dark"></span>
+                                        <span th:unless="${s.preferenceType}" 
+                                              class="text-muted">Not specified</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${s.roomTypePreference}" 
+                                              th:text="${s.roomTypePreference}"
+                                              class="badge bg-secondary"></span>
+                                        <span th:unless="${s.roomTypePreference}" 
+                                              class="text-muted">No preference</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${s.status == 'Allocated'} ? 'bg-success' : (${s.status == 'Waiting'} ? 'bg-warning text-dark' : 'bg-info')"
+                                              th:text="${s.status}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:if="${s.status == 'Waiting' or s.status == 'Processing Allocation'}">
+                                            <form th:action="@{/hostel/allocate}" method="post" class="d-inline">
+                                                <input type="hidden" name="studentId" th:value="${s.studentId}" />
+                                                <div class="input-group input-group-sm" style="max-width: 200px;">
+                                                    <select name="roomType" class="form-select form-select-sm" required>
+                                                        <option value="">Select Room Type</option>
+                                                        <option value="Single">Single Room</option>
+                                                        <option value="Double">Double Room</option>
+                                                        <option value="Triple">Triple Room</option>
+                                                        <option value="Quad">Quad Room</option>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-house-add"></i> Allocate
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div th:unless="${s.status == 'Waiting' or s.status == 'Processing Allocation'}">
+                                            <span class="text-muted">
+                                                <i class="bi bi-check-circle-fill"></i> Already allocated
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Footer -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-primary" th:text="${#lists.size(students)}">0</h5>
+                    <p class="card-text">Total Students</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-success" 
+                        th:text="${#lists.size(#lists.select(students, status == 'Allocated'))}">0</h5>
+                    <p class="card-text">Allocated</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-warning" 
+                        th:text="${#lists.size(#lists.select(students, status == 'Waiting'))}">0</h5>
+                    <p class="card-text">Waiting</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-info" 
+                        th:text="${#lists.size(#lists.select(students, status == 'Processing Allocation'))}">0</h5>
+                    <p class="card-text">Processing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for pink color -->
+<style>
+.bg-pink {
+    background-color: #e83e8c !important;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

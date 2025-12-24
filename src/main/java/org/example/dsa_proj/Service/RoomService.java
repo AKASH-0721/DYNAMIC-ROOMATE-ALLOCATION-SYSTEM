@@ -11,8 +11,8 @@ public class RoomService {
     @Autowired
     private RoomRepo roomRepo;
 
-    public static List<Room> getAllRooms() {
-        return RoomRepo.findAll();
+    public List<Room> getAllRooms() {
+        return roomRepo.findAll();
     }
 
     public Optional<Room> getRoomById(Long id) {

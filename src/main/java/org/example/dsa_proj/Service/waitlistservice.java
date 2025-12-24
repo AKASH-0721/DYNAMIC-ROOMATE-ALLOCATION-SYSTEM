@@ -25,7 +25,7 @@ public class waitlistservice {
         return waitRepo.findByPreferredRoomTypeOrderByPriorityScoreDesc(roomType)
                 .stream()
                 .map(WaitList::getStudent)
-                .toList();
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // ✅ Add student to waitlist

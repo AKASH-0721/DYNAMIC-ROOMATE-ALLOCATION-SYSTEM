@@ -13,6 +13,12 @@ import java.util.List;
 @RequestMapping("/hostel")
 public class HostelController {
 
+    // 🏠 Root redirect to rooms
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/hostel/rooms";
+    }
+
     @Autowired
     private StudentService studentService;
 
